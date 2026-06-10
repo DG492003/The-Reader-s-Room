@@ -1,0 +1,32 @@
+services:
+  postgres:
+    container_name: postgres-sql-trr
+    image: postgres
+    environment:
+      POSTGRES_USER: admin1234
+      POSTGRES_PASSWORD: password#12
+      PGDATA: /var/lib/postgresql/data
+      TZ: Asia/Kolkata
+      PGTZ: Asia/Kolkata
+      POSTGRES_DB: the_readers_room
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - spring-demo
+    restart: unless-stopped
+  mail-dev:
+    container_name: mail-dev-trr
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+networks:
+  spring-demo:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

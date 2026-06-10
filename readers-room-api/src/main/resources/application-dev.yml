@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/the_readers_room?TimeZone=Asia/Kolkata
+    username: admin1234
+    password: password#12
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        TimeZone: Asia/Kolkata
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Kolkata
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: admin1234
+    password: password#12
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+application:
+  security:
+    jwt:
+      secret-key: f0cc8bff78d508db48f539d1ad06b4510dc7036f14a64beabe59ef2d249edc29
+      expiration: 8640002
+  mailing:
+    frontend:
+      activation-url: https://localhost:4200/activate_account
+  file:
+    upload:
+      photos-output-path: ./uploads
+
+server:
+  port: 8088
