@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "./app/Pages/login/login.css";
+
+body {
+    margin: 0;
+    background: #F9F7F2;
+}
+
+app-login {
+    display: block;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 800px;
+    margin-top: 15%;
+}
