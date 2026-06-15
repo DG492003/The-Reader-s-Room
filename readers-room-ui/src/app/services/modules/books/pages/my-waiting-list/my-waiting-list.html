@@ -1,0 +1,135 @@
+<!-- ── BANNER ── -->
+<section class="banner banner--purple" aria-label="Waiting list overview">
+  <div class="banner__decor banner__decor--1" aria-hidden="true"></div>
+  <div class="banner__decor banner__decor--2" aria-hidden="true"></div>
+
+  <div class="banner__left">
+    <p class="banner__eyebrow">
+      <i class="ti ti-heart" aria-hidden="true"></i> Reading Queue
+    </p>
+    <h1 class="banner__title">Books you love,<br>waiting to be read.</h1>
+    <p class="banner__body">
+      Your personal reading queue — every book you've saved for later.
+      When you're done reading, return it to free it up for others.
+    </p>
+
+    <!-- Icon highlights -->
+    <div class="banner__icon-row" aria-hidden="true">
+      <div class="b-icon-block">
+        <span class="b-icon b-icon--heart"><i class="ti ti-bookmark"></i></span>
+        <span class="b-icon-label">Saved</span>
+      </div>
+      <div class="b-icon-block">
+        <span class="b-icon b-icon--read"><i class="ti ti-book-2"></i></span>
+        <span class="b-icon-label">Reading</span>
+      </div>
+      <div class="b-icon-block">
+        <span class="b-icon b-icon--return"><i class="ti ti-arrow-back-up"></i></span>
+        <span class="b-icon-label">Return</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner__right" aria-hidden="true">
+    <div class="queue-info">
+      <div class="queue-info__header">
+        <i class="ti ti-info-circle"></i>
+        <span>How your queue works</span>
+      </div>
+      <ul class="queue-steps">
+        <li class="queue-step">
+          <span class="queue-step__dot queue-step__dot--purple"></span>
+          <p>Browse Discover and borrow any shareable book to add it here.</p>
+        </li>
+        <li class="queue-step">
+          <span class="queue-step__dot queue-step__dot--active"></span>
+          <p>Active books show as <strong>Active</strong> — they're with you right now.</p>
+        </li>
+        <li class="queue-step">
+          <span class="queue-step__dot queue-step__dot--done"></span>
+          <p>Click <strong>Return</strong> when done — the owner confirms and it closes.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION HEADER ── -->
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="ti ti-heart" aria-hidden="true"></i> My Queue
+  </h2>
+  <span class="section-count">{{ borrowedBooks.totalElements ?? 0 }} books</span>
+</div>
+
+<!-- ── TOAST ── -->
+@if (message) {
+  <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+    <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+    {{ message }}
+  </div>
+}
+
+<!-- ── TABLE ── -->
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Rating</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (book of borrowedBooks.content; track book.id; let i = $index) {
+        <tr>
+          <td class="row-num">{{ i + 1 }}</td>
+          <td class="cell-title">{{ book.title }}</td>
+          <td>{{ book.authorName }}</td>
+          <td class="cell-mono">{{ book.isbn }}</td>
+          <td><span class="rate-pill">{{ book.rate ?? '—' }}</span></td>
+          <td>
+            @if (book.returned) {
+              <span class="badge badge-success">Returned</span>
+            } @else {
+              <span class="badge badge-info">Active</span>
+            }
+          </td>
+          <td>
+            @if (!book.returned) {
+              <button class="btn-action btn-action--warn" (click)="returnBook(book)" title="Return book">
+                <i class="ti ti-arrow-back-up" aria-hidden="true"></i> Return
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="7" class="empty-row">
+            <i class="ti ti-heart-broken" style="font-size:1.5rem;opacity:.3;display:block;margin-bottom:.5rem" aria-hidden="true"></i>
+            Your waiting list is empty. Head to <strong>Discover</strong> to find books to borrow.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- ── PAGINATION ── -->
+@if (pages.length > 1) {
+<div class="pagination-wrap">
+  <ul class="pagination">
+    <li><a (click)="goToFirstPage()"    href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevrons-left"></i></a></li>
+    <li><a (click)="goToPreviousPage()" href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevron-left"></i></a></li>
+    @for (p of pages; track p) {
+      <li><a (click)="gotToPage(p)" href="javascript:void(0)" [class.active]="page===p">{{ p+1 }}</a></li>
+    }
+    <li><a (click)="goToNextPage()" href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevron-right"></i></a></li>
+    <li><a (click)="goToLastPage()"    href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevrons-right"></i></a></li>
+  </ul>
+</div>
+}

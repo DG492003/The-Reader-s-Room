@@ -14,12 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
 
 import static com.trr.readers_room_api.book.bookSpecification.withOwnerId;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class bookService {
     private final bookTransHistoryRepository bookTransRepo;
     private final fileStorageService fileStorageService;
 
+    @Transactional
     public Integer save(bookRequest req, Authentication connectedUser) {
         userEntity user = (userEntity) connectedUser.getPrincipal();
         bookEntity book = bookMapper.toBook(req);
@@ -95,6 +99,7 @@ public class bookService {
         return bookId;
     }
 
+    @Transactional
     public Integer borrowBook(Integer bookId, Authentication connectedUser) {
         bookEntity book = repo.findById(bookId).orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         if (book.isArchived() || !book.isShareable()) {
@@ -111,7 +116,7 @@ public class bookService {
 
         final boolean isAlreadyBorrowedByOtherUser = bookTransRepo.isAlreadyBorrowed(bookId);
         if (isAlreadyBorrowedByOtherUser) {
-            throw new OperationNotPermittedException("Te requested book is already borrowed");
+            throw new OperationNotPermittedException("The requested book is already borrowed");
         }
 
         bookTransHistoryEntity bookTransactionHistory = bookTransHistoryEntity.builder().user(user).book(book).isReturned(false).isReturnedApproved(false).build();
@@ -119,6 +124,7 @@ public class bookService {
 
     }
 
+    @Transactional
     public Integer returnBorrowedBook(Integer bookId, Authentication connectedUser) {
         bookEntity book = repo.findById(bookId).orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         if (book.isArchived() || !book.isShareable()) {
@@ -135,13 +141,14 @@ public class bookService {
         return bookTransRepo.save(bookTransactionHistory).getId();
     }
 
+    @Transactional
     public Integer approveReturnBorrowedBook(Integer bookId, Authentication connectedUser) {
         bookEntity book = repo.findById(bookId).orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         if (book.isArchived() || !book.isShareable()) {
             throw new OperationNotPermittedException("The requested book is archived or not shareable");
         }
         userEntity user = (userEntity) connectedUser.getPrincipal();
-        if (Objects.equals(book.getOwner().getId(), user.getId())) {
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
             throw new OperationNotPermittedException("You cannot approve the return of a book you do not own");
         }
 
@@ -151,9 +158,13 @@ public class bookService {
         return bookTransRepo.save(bookTransactionHistory).getId();
     }
 
+    @Transactional
     public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
         bookEntity book = repo.findById(bookId).orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         userEntity user = (userEntity) connectedUser.getPrincipal();
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You cannot upload a cover for a book you do not own");
+        }
         var profilePicture = fileStorageService.saveFile(file, user.getId());
         book.setBookCover(profilePicture);
         repo.save(book);

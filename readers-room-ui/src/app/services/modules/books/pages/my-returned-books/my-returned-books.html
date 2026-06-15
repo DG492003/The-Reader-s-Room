@@ -1,0 +1,112 @@
+<!-- ── BANNER ── -->
+<section class="banner banner--green" aria-label="Returned books overview">
+  <div class="banner__decor banner__decor--1" aria-hidden="true"></div>
+  <div class="banner__decor banner__decor--2" aria-hidden="true"></div>
+
+  <div class="banner__left">
+    <p class="banner__eyebrow"><i class="ti ti-rotate-left" aria-hidden="true"></i> Return Management</p>
+    <h1 class="banner__title">Close the<br>borrow cycle.</h1>
+    <p class="banner__body">
+      These are books from your library that readers have returned.
+      Review and <strong>Approve</strong> each return to confirm receipt and free the book for others.
+    </p>
+  </div>
+
+  <div class="banner__right" aria-hidden="true">
+    <div class="status-legend">
+      <p class="status-legend__label">Return statuses</p>
+      <div class="status-item">
+        <span class="status-dot status-dot--warn"></span>
+        <div>
+          <p class="status-item__title">Pending approval</p>
+          <p class="status-item__desc">Reader has marked as returned — awaiting your confirmation.</p>
+        </div>
+      </div>
+      <div class="status-item">
+        <span class="status-dot status-dot--success"></span>
+        <div>
+          <p class="status-item__title">Approved</p>
+          <p class="status-item__desc">You've confirmed the return. The cycle is complete.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION HEADER ── -->
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="ti ti-rotate-left" aria-hidden="true"></i> Returned to Me
+  </h2>
+  <span class="section-count">{{ returnedBooks.totalElements ?? 0 }} books</span>
+</div>
+
+<!-- ── TOAST ── -->
+@if (message) {
+  <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+    <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+    {{ message }}
+  </div>
+}
+
+<!-- ── TABLE ── -->
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Rating</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (book of returnedBooks.content; track book.id; let i = $index) {
+        <tr>
+          <td class="row-num">{{ i + 1 }}</td>
+          <td class="cell-title">{{ book.title }}</td>
+          <td>{{ book.authorName }}</td>
+          <td class="cell-mono">{{ book.isbn }}</td>
+          <td><span class="rate-pill">{{ book.rate ?? '—' }}</span></td>
+          <td>
+            @if (book.returnApproved) {
+              <span class="badge badge-success">Approved</span>
+            } @else {
+              <span class="badge badge-warn">Pending approval</span>
+            }
+          </td>
+          <td>
+            @if (!book.returnApproved) {
+              <button class="btn-action btn-action--success" (click)="approveReturn(book)" title="Approve return">
+                <i class="ti ti-check" aria-hidden="true"></i> Approve
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="7" class="empty-row">
+          <i class="ti ti-checks" style="font-size:1.5rem;opacity:.3;display:block;margin-bottom:.5rem"></i>
+          No returned books found.
+        </td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- ── PAGINATION ── -->
+@if (pages.length > 1) {
+<div class="pagination-wrap">
+  <ul class="pagination">
+    <li><a (click)="goToFirstPage()"    href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevrons-left"></i></a></li>
+    <li><a (click)="goToPreviousPage()" href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevron-left"></i></a></li>
+    @for (p of pages; track p) {
+      <li><a (click)="gotToPage(p)" href="javascript:void(0)" [class.active]="page===p">{{ p+1 }}</a></li>
+    }
+    <li><a (click)="goToNextPage()" href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevron-right"></i></a></li>
+    <li><a (click)="goToLastPage()"    href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevrons-right"></i></a></li>
+  </ul>
+</div>
+}

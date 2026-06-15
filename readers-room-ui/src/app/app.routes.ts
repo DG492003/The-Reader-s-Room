@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { Login } from './Pages/login/login';
+import { Login } from './services/Pages/login/login';
+import { registrationGuard } from './services/guard/registration.guard';
 
 export const routes: Routes = [
     {
@@ -13,14 +14,15 @@ export const routes: Routes = [
     },
     {
         path: 'register',
-        loadComponent: () => import('./Pages/register/register').then(m => m.Register)
+        loadComponent: () => import('./services/Pages/register/register').then(m => m.Register)
     },
     {
         path: 'activate-account',
-        loadComponent: () => import('./Pages/activate-account/activate-account').then(m => m.ActivateAccount)
+        canActivate: [registrationGuard],
+        loadComponent: () => import('./services/Pages/activate-account/activate-account').then(m => m.ActivateAccount)
     },
     {
         path: 'books',
-        loadChildren: () => import('./modules/books/books-module').then(m => m.BooksModule)
+        loadChildren: () => import('./services/modules/books/books-routing-module').then(m => m.BOOKS_ROUTES)
     },
 ];

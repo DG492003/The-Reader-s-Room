@@ -1,0 +1,85 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ isEditMode ? 'Edit Book' : 'Add a New Book' }}</h1>
+    <p class="page-subtitle">{{ isEditMode ? 'Update the details for this book.' : 'Share a book with the Reader Room community.' }}</p>
+  </div>
+</div>
+
+@if (message) {
+  <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+    <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+    {{ message }}
+  </div>
+}
+
+<div class="manage-layout">
+
+  <!-- Cover upload -->
+  <aside class="cover-panel">
+    <p class="panel-label">Book Cover</p>
+    <div class="cover-preview">
+      @if (selectedCoverPreview) {
+        <img [src]="selectedCoverPreview" alt="Cover preview" />
+      } @else {
+        <div class="cover-placeholder">
+          <i class="ti ti-photo" aria-hidden="true"></i>
+          <span>No cover selected</span>
+        </div>
+      }
+    </div>
+    <label class="upload-btn">
+      <i class="ti ti-upload" aria-hidden="true"></i> Upload cover
+      <input type="file" accept="image/*" class="upload-input" (change)="onCoverSelected($event)" />
+    </label>
+    <p class="upload-hint">JPG, PNG or WEBP — max 5 MB</p>
+  </aside>
+
+  <!-- Form -->
+  <section class="form-panel">
+    <form (ngSubmit)="onSubmit()" #bookForm="ngForm" novalidate>
+
+      <div class="form-field">
+        <label for="title">Title <span class="required">*</span></label>
+        <input id="title" name="title" type="text" class="form-control"
+          [(ngModel)]="bookRequest.title" required placeholder="e.g. The Great Gatsby" />
+      </div>
+
+      <div class="form-field">
+        <label for="authorName">Author <span class="required">*</span></label>
+        <input id="authorName" name="authorName" type="text" class="form-control"
+          [(ngModel)]="bookRequest.authorName" required placeholder="e.g. F. Scott Fitzgerald" />
+      </div>
+
+      <div class="form-field">
+        <label for="isbn">ISBN <span class="required">*</span></label>
+        <input id="isbn" name="isbn" type="text" class="form-control"
+          [(ngModel)]="bookRequest.isbn" required placeholder="e.g. 978-0-7432-7356-5" />
+      </div>
+
+      <div class="form-field">
+        <label for="synopsis">Synopsis <span class="required">*</span></label>
+        <textarea id="synopsis" name="synopsis" class="form-control"
+          [(ngModel)]="bookRequest.synopsis" required rows="5"
+          placeholder="A short description of the book..."></textarea>
+      </div>
+
+      <div class="check-wrap">
+        <input id="shareable" name="shareable" type="checkbox"
+          [(ngModel)]="bookRequest.shareable" />
+        <label for="shareable">Allow others to borrow this book</label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="bookForm.invalid">
+          <i class="ti ti-device-floppy" aria-hidden="true"></i>
+          {{ isEditMode ? 'Save changes' : 'Add book' }}
+        </button>
+        <a routerLink="/books/my-books" class="btn btn-ghost">
+          <i class="ti ti-x" aria-hidden="true"></i> Cancel
+        </a>
+      </div>
+
+    </form>
+  </section>
+
+</div>

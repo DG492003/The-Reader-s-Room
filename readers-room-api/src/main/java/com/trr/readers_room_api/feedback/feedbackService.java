@@ -29,10 +29,10 @@ public class feedbackService {
         bookEntity book = bookRepo.findById(request.bookId())
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + request.bookId()));
         if (book.isArchived() || !book.isShareable()) {
-            throw new OperationNotPermittedException("You cannot give a feedback for and archived or not shareable book");
+            throw new OperationNotPermittedException("You cannot give a feedback for an archived or not shareable book");
         }
         userEntity user = ((userEntity) connectedUser.getPrincipal());
-        if (Objects.equals(book.getCreatedBy(), user.getId())) {
+        if (Objects.equals(book.getOwner().getId(), user.getId())) {
             throw new OperationNotPermittedException("You cannot give feedback to your own book");
         }
         feedbackEntity feedback = feedbackMapper.toFeedback(request);

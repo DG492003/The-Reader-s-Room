@@ -54,21 +54,21 @@ public class bookController {
     }
 
     @PatchMapping("/archived/{bookId}")
-    public ResponseEntity<Integer> updateArchivedStatus(@PathVariable("bookIid") Integer bookId, Authentication connectedUser) {
+    public ResponseEntity<Integer> updateArchivedStatus(@PathVariable("bookId") Integer bookId, Authentication connectedUser) {
         return ResponseEntity.ok(service.updateArchivedStatus(bookId, connectedUser));
     }
 
-    @PostMapping("borrow/{bookId}")
+    @PostMapping("/borrow/{bookId}")
     public ResponseEntity<Integer> borrowBook(@PathVariable("bookId") Integer bookId, Authentication connectedUser) {
         return ResponseEntity.ok(service.borrowBook(bookId, connectedUser));
     }
 
-    @PatchMapping("borrow/return/{bookId}")
+    @PatchMapping("/borrow/return/{bookId}")
     public ResponseEntity<Integer> returnBorrowBook(@PathVariable("bookId") Integer bookId, Authentication connectedUser) {
         return ResponseEntity.ok(service.returnBorrowedBook(bookId, connectedUser));
     }
 
-    @PatchMapping("borrow/return/approve/{bookId}")
+    @PatchMapping("/borrow/return/approve/{bookId}")
     public ResponseEntity<Integer> approveReturnBorrowBook(@PathVariable("bookId") Integer bookId, Authentication connectedUser) {
         return ResponseEntity.ok(service.approveReturnBorrowedBook(bookId, connectedUser));
     }

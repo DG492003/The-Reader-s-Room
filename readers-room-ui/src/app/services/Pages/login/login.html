@@ -1,0 +1,132 @@
+<div class="page">
+
+    <!-- LEFT: Branding panel -->
+    <div class="panel-left">
+        <div class="panel-decor panel-decor--top"></div>
+        <div class="panel-decor panel-decor--bottom"></div>
+
+        <div class="brand">
+            <svg class="brand-logo" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M50 42 C50 42 18 38 14 14 C10 -4 36 2 50 18 Z" fill="#3B5998" opacity="0.9"/>
+                <path d="M50 42 C50 42 82 38 86 14 C90 -4 64 2 50 18 Z" fill="#4A7C59" opacity="0.9"/>
+                <path d="M50 42 C50 42 18 38 10 58 C8 64 30 68 50 54 Z" fill="#3B5998" opacity="0.55"/>
+                <path d="M50 42 C50 42 82 38 90 58 C92 64 70 68 50 54 Z" fill="#4A7C59" opacity="0.55"/>
+                <path d="M50 42 C50 42 34 40 26 50 C20 58 32 62 50 54 Z" fill="#3B6B70" opacity="0.5"/>
+                <path d="M50 42 C50 42 66 40 74 50 C80 58 68 62 50 54 Z" fill="#3B6B70" opacity="0.5"/>
+            </svg>
+            <span class="brand-name">The Reader Room</span>
+        </div>
+
+        <div class="panel-content">
+            <div class="panel-quote">
+                <p class="quote-text">"A reader lives a thousand lives before he dies. The man who never reads lives only one."</p>
+                <p class="quote-author">— George R.R. Martin</p>
+            </div>
+
+            <div class="panel-social">
+                <div class="avatar-stack" aria-hidden="true">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=80&h=80&fit=crop" alt="" />
+                    </div>
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=80&h=80&fit=crop" alt="" />
+                    </div>
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=80&h=80&fit=crop" alt="" />
+                    </div>
+                </div>
+                <span class="social-text">Join 42,000+ readers</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: Login form -->
+    <div class="panel-right">
+
+        <div class="mobile-brand">
+            <svg class="brand-logo brand-logo--mobile" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M50 42 C50 42 18 38 14 14 C10 -4 36 2 50 18 Z" fill="#3B5998" opacity="0.9"/>
+                <path d="M50 42 C50 42 82 38 86 14 C90 -4 64 2 50 18 Z" fill="#4A7C59" opacity="0.9"/>
+                <path d="M50 42 C50 42 18 38 10 58 C8 64 30 68 50 54 Z" fill="#3B5998" opacity="0.55"/>
+                <path d="M50 42 C50 42 82 38 90 58 C92 64 70 68 50 54 Z" fill="#4A7C59" opacity="0.55"/>
+                <path d="M50 42 C50 42 34 40 26 50 C20 58 32 62 50 54 Z" fill="#3B6B70" opacity="0.5"/>
+                <path d="M50 42 C50 42 66 40 74 50 C80 58 68 62 50 54 Z" fill="#3B6B70" opacity="0.5"/>
+            </svg>
+            <span class="brand-name brand-name--dark">The Reader Room</span>
+        </div>
+
+        <div class="form-container">
+            <h1 class="form-title">Welcome back</h1>
+            <p class="form-subtitle">Sign in to continue your reading journey.</p>
+
+            <!-- Session expired banner -->
+            @if (sessionExpired) {
+            <div class="alert-session" role="alert" aria-live="polite">
+                <i class="ti ti-clock-off" aria-hidden="true"></i>
+                <div>
+                    <strong>Session expired</strong>
+                    <p>Your session has timed out. Please sign in again to continue.</p>
+                </div>
+            </div>
+            }
+
+            <!-- Server error banner -->
+            @if (serverError) {
+            <div class="alert-error" role="alert" aria-live="polite">
+                <p>{{ serverError }}</p>
+            </div>
+            }
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    [class.input-error]="fieldErrors['email']"
+                    [(ngModel)]="authRequest.email"
+                    (ngModelChange)="clearFieldError('email')"
+                    (keyup.enter)="login()"
+                    [attr.aria-describedby]="fieldErrors['email'] ? 'err-email' : null"
+                />
+                @if (fieldErrors['email']) {
+                <span class="field-error" id="err-email" role="alert">{{ fieldErrors['email'] }}</span>
+                }
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input
+                        [type]="showPassword ? 'text' : 'password'"
+                        id="password"
+                        name="password"
+                        placeholder="Your password"
+                        autocomplete="current-password"
+                        [class.input-error]="fieldErrors['password']"
+                        [(ngModel)]="authRequest.password"
+                        (ngModelChange)="clearFieldError('password')"
+                        (keyup.enter)="login()"
+                        [attr.aria-describedby]="fieldErrors['password'] ? 'err-password' : null"
+                    />
+                    <button type="button" class="password-toggle" (click)="togglePassword()"
+                        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+                        <i class="ti" [class.ti-eye]="!showPassword" [class.ti-eye-off]="showPassword"></i>
+                    </button>
+                </div>
+                @if (fieldErrors['password']) {
+                <span class="field-error" id="err-password" role="alert">{{ fieldErrors['password'] }}</span>
+                }
+            </div>
+
+            <button class="btn-signin" type="button" (click)="login()">Sign in</button>
+
+            <p class="signup-prompt">
+                New to The Reader Room? <a href="javascript:void(0)" (click)="register()">Create an account</a>
+            </p>
+        </div>
+
+    </div>
+</div>

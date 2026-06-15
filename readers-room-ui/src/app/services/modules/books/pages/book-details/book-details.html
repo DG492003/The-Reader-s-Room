@@ -1,0 +1,108 @@
+<div class="details-layout">
+
+  <!-- LEFT: Cover + rating -->
+  <aside class="details-cover-col">
+    <div class="cover-wrap">
+      <img [src]="bookCover" [alt]="book.title" class="cover-img" />
+    </div>
+    <div class="cover-rating">
+      <app-rating [rating]="book.rate || 0"></app-rating>
+      @if ((book.rate || 0) > 0) {
+        <span class="rating-val">{{ book.rate | number:'1.1-1' }} / 5</span>
+      } @else {
+        <span class="rating-none">No ratings yet</span>
+      }
+    </div>
+  </aside>
+
+  <!-- RIGHT: Info + feedback -->
+  <div class="details-main-col">
+
+    <!-- Book info -->
+    <div class="book-info-card">
+      <h1 class="book-title">{{ book.title }}</h1>
+      <div class="book-meta">
+        <span class="meta-item"><i class="ti ti-pencil" aria-hidden="true"></i> {{ book.authorName }}</span>
+        <span class="meta-item"><i class="ti ti-barcode" aria-hidden="true"></i> {{ book.isbn }}</span>
+        <span class="meta-item"><i class="ti ti-user" aria-hidden="true"></i> {{ book.owner }}</span>
+      </div>
+      <div class="book-divider"></div>
+      <p class="book-synopsis">{{ book.synopsis }}</p>
+    </div>
+
+    <!-- Feedback form -->
+    <div class="feedback-card">
+      <h2 class="section-title">Leave a review</h2>
+
+      @if (message) {
+        <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+          <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+          {{ message }}
+        </div>
+      }
+
+      <form (ngSubmit)="submitFeedback()" #feedbackForm="ngForm" novalidate>
+        <div class="star-picker" role="group" aria-label="Rating">
+          @for (star of [1,2,3,4,5]; track star) {
+            <button type="button" class="star-btn"
+              [class.star-btn--filled]="star <= (hoverRating || feedbackRequest.note || 0)"
+              (mouseenter)="hoverRating = star"
+              (mouseleave)="hoverRating = 0"
+              (click)="setRating(star)"
+              [attr.aria-label]="star + ' star'">
+              <i class="ti ti-star-filled" aria-hidden="true"></i>
+            </button>
+          }
+          <span class="star-label">{{ feedbackRequest.note ? feedbackRequest.note + '/5' : 'Select a rating' }}</span>
+        </div>
+
+        <div class="form-field">
+          <label for="comment">Your review</label>
+          <textarea id="comment" name="comment" class="form-control"
+            [(ngModel)]="feedbackRequest.comment" required rows="4"
+            placeholder="What did you think of this book?"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary"
+          [disabled]="feedbackForm.invalid || !feedbackRequest.note">
+          <i class="ti ti-send" aria-hidden="true"></i> Submit review
+        </button>
+      </form>
+    </div>
+
+    <!-- Reader feedbacks -->
+    <div class="feedbacks-card">
+      <h2 class="section-title">Reader reviews</h2>
+
+      @for (fb of feedbackResponse.content; track $index) {
+        <div class="feedback-item" [class.feedback-item--own]="fb.ownFeedback">
+          <div class="feedback-item__header">
+            <app-rating [rating]="fb.note || 0"></app-rating>
+            @if (fb.ownFeedback) {
+              <span class="own-badge">Your review</span>
+            }
+          </div>
+          <p class="feedback-item__comment">{{ fb.comment }}</p>
+        </div>
+      } @empty {
+        <div class="empty-feedback">
+          <i class="ti ti-message-off" aria-hidden="true"></i>
+          <span>No reviews yet — be the first!</span>
+        </div>
+      }
+
+      <div class="pagination-wrap">
+        <ul class="pagination">
+          <li><a (click)="goToFirstFeedbackPage()"    href="javascript:void(0)" [class.disabled]="feedbackPage===0"><i class="ti ti-chevrons-left"></i></a></li>
+          <li><a (click)="goToPreviousFeedbackPage()" href="javascript:void(0)" [class.disabled]="feedbackPage===0"><i class="ti ti-chevron-left"></i></a></li>
+          @for (p of feedbackPages; track p) {
+            <li><a (click)="gotToFeedbackPage(p)" href="javascript:void(0)" [class.active]="feedbackPage===p">{{ p+1 }}</a></li>
+          }
+          <li><a (click)="goToNextFeedbackPage()" href="javascript:void(0)" [class.disabled]="isFeedbackLastPage"><i class="ti ti-chevron-right"></i></a></li>
+          <li><a (click)="goToLastFeedbackPage()"    href="javascript:void(0)" [class.disabled]="isFeedbackLastPage"><i class="ti ti-chevrons-right"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>

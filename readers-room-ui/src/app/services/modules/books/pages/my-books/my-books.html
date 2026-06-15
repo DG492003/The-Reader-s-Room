@@ -1,0 +1,106 @@
+<!-- ── BANNER ── -->
+<section class="banner banner--amber" aria-label="My Books overview">
+  <div class="banner__decor banner__decor--1" aria-hidden="true"></div>
+  <div class="banner__decor banner__decor--2" aria-hidden="true"></div>
+
+  <div class="banner__left">
+    <p class="banner__eyebrow"><i class="ti ti-book" aria-hidden="true"></i> Personal Library</p>
+    <h1 class="banner__title">Your books,<br>your story.</h1>
+    <p class="banner__body">
+      Everything you've added lives here. Share books with the community,
+      archive ones you're done with, or pick up editing right where you left off.
+    </p>
+    <div class="banner__icon-row" aria-hidden="true">
+      <span class="b-icon b-icon--share"><i class="ti ti-share"></i></span>
+      <span class="b-icon b-icon--edit"><i class="ti ti-edit"></i></span>
+      <span class="b-icon b-icon--archive"><i class="ti ti-archive"></i></span>
+      <span class="b-icon b-icon--add"><i class="ti ti-plus"></i></span>
+    </div>
+    <a routerLink="/books/manage" class="banner__cta">
+      <i class="ti ti-plus" aria-hidden="true"></i> Add a new book
+    </a>
+  </div>
+
+  <div class="banner__right" aria-hidden="true">
+    <div class="tip-cards">
+      <div class="tip-card">
+        <span class="tip-card__icon"><i class="ti ti-share"></i></span>
+        <div>
+          <p class="tip-card__title">Share</p>
+          <p class="tip-card__desc">Toggle shareable so others can borrow your book.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-card__icon"><i class="ti ti-edit"></i></span>
+        <div>
+          <p class="tip-card__title">Edit</p>
+          <p class="tip-card__desc">Update cover, synopsis or details anytime.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-card__icon"><i class="ti ti-archive"></i></span>
+        <div>
+          <p class="tip-card__title">Archive</p>
+          <p class="tip-card__desc">Hide a book from the community without deleting it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION HEADER ── -->
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="ti ti-layout-list" aria-hidden="true"></i> My Collection
+  </h2>
+  <div class="section-header__actions">
+    <span class="section-count">{{ bookResponse.totalElements ?? 0 }} books</span>
+    <a routerLink="/books/manage" class="btn-inline">
+      <i class="ti ti-plus" aria-hidden="true"></i> Add book
+    </a>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+@if (message) {
+  <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+    <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+    {{ message }}
+  </div>
+}
+
+<!-- ── BOOK GRID ── -->
+<div class="book-grid">
+  @for (book of bookResponse.content; track book.id) {
+    <app-book-card
+      [book]="book"
+      [manage]="true"
+      (archive)="archiveBook($event)"
+      (share)="shareBook($event)"
+      (edit)="editBook($event)"
+    ></app-book-card>
+  } @empty {
+    <div class="empty-state">
+      <i class="ti ti-book-2 empty-state__icon" aria-hidden="true"></i>
+      <p class="empty-state__text">You haven't added any books yet.</p>
+      <a routerLink="/books/manage" class="btn-inline" style="margin-top:1rem">
+        <i class="ti ti-plus"></i> Add your first book
+      </a>
+    </div>
+  }
+</div>
+
+<!-- ── PAGINATION ── -->
+@if (pages.length > 1) {
+<div class="pagination-wrap">
+  <ul class="pagination">
+    <li><a (click)="goToFirstPage()"    href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevrons-left"></i></a></li>
+    <li><a (click)="goToPreviousPage()" href="javascript:void(0)" [class.disabled]="page===0"><i class="ti ti-chevron-left"></i></a></li>
+    @for (p of pages; track p) {
+      <li><a (click)="gotToPage(p)" href="javascript:void(0)" [class.active]="page===p">{{ p+1 }}</a></li>
+    }
+    <li><a (click)="goToNextPage()" href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevron-right"></i></a></li>
+    <li><a (click)="goToLastPage()"    href="javascript:void(0)" [class.disabled]="isLastPage"><i class="ti ti-chevrons-right"></i></a></li>
+  </ul>
+</div>
+}

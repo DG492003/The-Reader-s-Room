@@ -1,0 +1,103 @@
+<!-- ── HERO BANNER ── -->
+<section class="hero" aria-label="Welcome banner">
+  <div class="hero__decor hero__decor--1" aria-hidden="true"></div>
+  <div class="hero__decor hero__decor--2" aria-hidden="true"></div>
+
+  <div class="hero__left">
+    <p class="hero__eyebrow">
+      <i class="ti ti-compass" aria-hidden="true"></i> Community Library
+    </p>
+    <h1 class="hero__title">Your next great<br>read is waiting.</h1>
+    <p class="hero__body">
+      Explore books shared by readers like you. Borrow, review,
+      and discover stories across every genre.
+    </p>
+    <div class="hero__stats">
+      <div class="hero__stat">
+        <span class="hero__stat-num">42 K+</span>
+        <span class="hero__stat-label">Readers</span>
+      </div>
+      <div class="hero__stat-divider" aria-hidden="true"></div>
+      <div class="hero__stat">
+        <span class="hero__stat-num">12 K+</span>
+        <span class="hero__stat-label">Books shared</span>
+      </div>
+      <div class="hero__stat-divider" aria-hidden="true"></div>
+      <div class="hero__stat">
+        <span class="hero__stat-num">98 K+</span>
+        <span class="hero__stat-label">Reviews written</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__right" aria-hidden="true">
+    <!-- Decorative stacked books illustration via CSS + SVG logo -->
+    <div class="hero__books-stack">
+      <div class="hero__book hero__book--back"></div>
+      <div class="hero__book hero__book--mid"></div>
+      <div class="hero__book hero__book--front">
+        <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero__book-logo">
+          <path d="M50 42 C50 42 18 38 14 14 C10 -4 36 2 50 18 Z" fill="#3B5998" opacity="0.85"/>
+          <path d="M50 42 C50 42 82 38 86 14 C90 -4 64 2 50 18 Z" fill="#4A7C59" opacity="0.85"/>
+          <path d="M50 42 C50 42 18 38 10 58 C8 64 30 68 50 54 Z" fill="#3B5998" opacity="0.5"/>
+          <path d="M50 42 C50 42 82 38 90 58 C92 64 70 68 50 54 Z" fill="#4A7C59" opacity="0.5"/>
+          <path d="M50 42 C50 42 34 40 26 50 C20 58 32 62 50 54 Z" fill="#3B6B70" opacity="0.45"/>
+          <path d="M50 42 C50 42 66 40 74 50 C80 58 68 62 50 54 Z" fill="#3B6B70" opacity="0.45"/>
+        </svg>
+      </div>
+    </div>
+    <blockquote class="hero__quote">
+      <p>"A reader lives a thousand lives before he dies."</p>
+      <cite>— George R.R. Martin</cite>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ── SECTION HEADER ── -->
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="ti ti-layout-list" aria-hidden="true"></i> All Books
+  </h2>
+  <span class="section-count" aria-live="polite">
+    {{ bookResponse.totalElements ?? 0 }} books
+  </span>
+</div>
+
+<!-- ── TOAST ── -->
+@if (message) {
+  <div class="toast-message" [class.toast-success]="level==='success'" [class.toast-error]="level==='error'" role="alert">
+    <i class="ti" [class.ti-circle-check]="level==='success'" [class.ti-alert-circle]="level==='error'" aria-hidden="true"></i>
+    {{ message }}
+  </div>
+}
+
+<!-- ── BOOK GRID ── -->
+<div class="book-grid">
+  @for (book of bookResponse.content; track book.id) {
+    <app-book-card
+      [book]="book"
+      (borrow)="borrowBook($event)"
+      (details)="displayBookDetails($event)"
+    ></app-book-card>
+  } @empty {
+    <div class="empty-state">
+      <i class="ti ti-book-2 empty-state__icon" aria-hidden="true"></i>
+      <p class="empty-state__text">No books found yet. Check back soon!</p>
+    </div>
+  }
+</div>
+
+<!-- ── PAGINATION ── -->
+@if (pages.length > 1) {
+<div class="pagination-wrap">
+  <ul class="pagination">
+    <li><a (click)="goToFirstPage()"    href="javascript:void(0)" [class.disabled]="page===0"      aria-label="First page"><i class="ti ti-chevrons-left"></i></a></li>
+    <li><a (click)="goToPreviousPage()" href="javascript:void(0)" [class.disabled]="page===0"      aria-label="Previous page"><i class="ti ti-chevron-left"></i></a></li>
+    @for (p of pages; track p) {
+      <li><a (click)="gotToPage(p)" href="javascript:void(0)" [class.active]="page===p">{{ p+1 }}</a></li>
+    }
+    <li><a (click)="goToNextPage()" href="javascript:void(0)" [class.disabled]="isLastPage" aria-label="Next page"><i class="ti ti-chevron-right"></i></a></li>
+    <li><a (click)="goToLastPage()"    href="javascript:void(0)" [class.disabled]="isLastPage" aria-label="Last page"><i class="ti ti-chevrons-right"></i></a></li>
+  </ul>
+</div>
+}

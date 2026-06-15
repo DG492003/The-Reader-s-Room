@@ -1,0 +1,145 @@
+.book-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(28,20,9,.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  transition: box-shadow .2s, transform .2s;
+  border: 1px solid #E2D8CE;
+  position: relative;
+}
+.book-card:hover {
+  box-shadow: 0 6px 28px rgba(28,20,9,.14);
+  transform: translateY(-3px);
+}
+.book-card--archived { border-color: #FECACA; opacity: .85; }
+.book-card--shareable { border-color: #A3DFBB; }
+
+/* Cover */
+.book-card__cover {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #EDE4DA;
+}
+.book-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.book-card__badge {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  border-radius: 99px;
+  padding: .2rem .6rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.book-card__badge--shareable { background: #EDFBF3; color: #1A6B3A; border: 1px solid #A3DFBB; }
+.book-card__badge--archived  { background: #FEF2F2; color: #C0392B; border: 1px solid #FECACA; }
+
+/* Body */
+.book-card__body {
+  padding: .85rem 1rem .5rem;
+  flex: 1;
+  overflow: hidden;
+}
+.book-card__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: .95rem;
+  font-weight: 700;
+  color: #1C1409;
+  margin-bottom: .25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-card__author,
+.book-card__owner {
+  font-size: .75rem;
+  color: #8C7B6B;
+  margin-bottom: .15rem;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-card__synopsis {
+  font-size: .75rem;
+  color: #5C4A36;
+  margin-top: .35rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+.book-card__synopsis--expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.synopsis-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: .2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #B85C20;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.synopsis-toggle:hover { color: #8F4518; }
+
+/* Footer */
+.book-card__footer {
+  padding: .65rem 1rem;
+  border-top: 1px solid #F0E9E0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+.book-card__rating {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.book-card__rate-val {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #8C7B6B;
+}
+.book-card__actions {
+  display: flex;
+  gap: .35rem;
+}
+.card-action {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #E2D8CE;
+  background: transparent;
+  color: #8C7B6B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.card-action:hover { background: #F5EFE6; color: #1C1409; border-color: #C4B8A8; }
+.card-action--primary:hover { background: #B85C20; color: #fff; border-color: #B85C20; }
+.card-action--heart:hover   { background: #FEF2F2; color: #C0392B; border-color: #FECACA; }
+.card-action--danger:hover  { background: #FEF2F2; color: #C0392B; border-color: #FECACA; }

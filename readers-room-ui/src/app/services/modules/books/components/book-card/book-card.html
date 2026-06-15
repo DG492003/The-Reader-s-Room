@@ -1,0 +1,70 @@
+<article class="book-card" [class.book-card--shareable]="book.shareable" [class.book-card--archived]="book.archived">
+
+  <!-- Cover -->
+  <div class="book-card__cover">
+    <img [src]="bookCover" [alt]="book.title || 'Book cover'" loading="lazy" />
+    @if (book.archived) {
+      <span class="book-card__badge book-card__badge--archived">Archived</span>
+    } @else if (book.shareable) {
+      <span class="book-card__badge book-card__badge--shareable">Shareable</span>
+    }
+  </div>
+
+  <!-- Body -->
+  <div class="book-card__body">
+    <h3 class="book-card__title">{{ book.title }}</h3>
+    <p class="book-card__author">
+      <i class="ti ti-pencil" aria-hidden="true"></i> {{ book.authorName }}
+    </p>
+    <p class="book-card__owner">
+      <i class="ti ti-user" aria-hidden="true"></i> {{ book.owner }}
+    </p>
+    <p class="book-card__synopsis" [class.book-card__synopsis--expanded]="synopsisExpanded">{{ book.synopsis }}</p>
+    @if (book.synopsis && book.synopsis.length > 60) {
+      <button class="synopsis-toggle" (click)="toggleSynopsis($event)">
+        {{ synopsisExpanded ? 'Show less' : 'Read more' }}
+      </button>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="book-card__footer">
+    <div class="book-card__rating">
+      <app-rating [rating]="book.rate || 0"></app-rating>
+      @if ((book.rate || 0) > 0) {
+        <span class="book-card__rate-val">{{ book.rate }}</span>
+      }
+    </div>
+
+    <!-- Browse actions -->
+    @if (!manage) {
+    <div class="book-card__actions">
+      <button class="card-action" (click)="onShowDetails()" title="View details" aria-label="View details">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+      </button>
+      <button class="card-action card-action--primary" (click)="onBorrow()" title="Borrow" aria-label="Borrow book">
+        <i class="ti ti-book-2" aria-hidden="true"></i>
+      </button>
+      <button class="card-action card-action--heart" (click)="onAddToWaitingList()" title="Add to waiting list" aria-label="Add to waiting list">
+        <i class="ti ti-heart" aria-hidden="true"></i>
+      </button>
+    </div>
+    }
+
+    <!-- Manage actions -->
+    @if (manage) {
+    <div class="book-card__actions">
+      <button class="card-action card-action--primary" (click)="onEdit()" title="Edit" aria-label="Edit book">
+        <i class="ti ti-edit" aria-hidden="true"></i>
+      </button>
+      <button class="card-action" (click)="onShare()" title="Toggle shareable" aria-label="Toggle shareable">
+        <i class="ti ti-share" aria-hidden="true"></i>
+      </button>
+      <button class="card-action card-action--danger" (click)="onArchive()" title="Toggle archive" aria-label="Toggle archive">
+        <i class="ti ti-archive" aria-hidden="true"></i>
+      </button>
+    </div>
+    }
+  </div>
+
+</article>

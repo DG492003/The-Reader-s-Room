@@ -40,7 +40,7 @@ public interface bookTransHistoryRepository extends JpaRepository<bookTransHisto
     @Query("""
             SELECT t
             FROM bookTransHistoryEntity t
-            WHERE t.book.createdBy = :userId
+            WHERE t.book.owner.id = :userId
             AND t.book.id = :bookId
             AND t.isReturned = true
             AND t.isReturnedApproved = false
@@ -51,6 +51,8 @@ public interface bookTransHistoryRepository extends JpaRepository<bookTransHisto
             SELECT h
             FROM bookTransHistoryEntity h
             WHERE h.user.id = :userId
+            AND h.isReturned = false
+            AND h.isReturnedApproved = false
             """)
     Page<bookTransHistoryEntity> findAllBorrowedBooks(Pageable pageable, Integer userId);
 
@@ -58,6 +60,7 @@ public interface bookTransHistoryRepository extends JpaRepository<bookTransHisto
             SELECT h
             FROM bookTransHistoryEntity h
             WHERE h.book.owner.id = :userId
+            AND h.isReturned = true
             """)
     Page<bookTransHistoryEntity> findAllReturnedBooks(Pageable pageable, Integer userId);
 }

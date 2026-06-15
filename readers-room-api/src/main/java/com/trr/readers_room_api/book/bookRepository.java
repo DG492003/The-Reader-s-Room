@@ -16,6 +16,11 @@ public interface bookRepository extends JpaRepository<bookEntity, Integer>, JpaS
              WHERE b.archived = false
              AND b.shareable = true
              AND b.owner.id != :userId
+             AND NOT EXISTS (
+                 SELECT t FROM bookTransHistoryEntity t
+                 WHERE t.book = b
+                 AND t.isReturnedApproved = false
+             )
             """)
     Page<bookEntity> findAllDisplayableBooks(Pageable pageable, Integer userId);
 
