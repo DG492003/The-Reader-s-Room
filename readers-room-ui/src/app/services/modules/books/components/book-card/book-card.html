@@ -2,7 +2,7 @@
 
   <!-- Cover -->
   <div class="book-card__cover">
-    <img [src]="bookCover" [alt]="book.title || 'Book cover'" loading="lazy" />
+    <img [src]="bookCover" [alt]="book.title || 'Book cover'" loading="lazy" width="220" height="200" />
     @if (book.archived) {
       <span class="book-card__badge book-card__badge--archived">Archived</span>
     } @else if (book.shareable) {

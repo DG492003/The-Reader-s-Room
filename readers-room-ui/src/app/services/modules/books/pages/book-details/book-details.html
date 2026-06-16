@@ -3,7 +3,7 @@
   <!-- LEFT: Cover + rating -->
   <aside class="details-cover-col">
     <div class="cover-wrap">
-      <img [src]="bookCover" [alt]="book.title" class="cover-img" />
+      <img [src]="bookCover" [alt]="book.title" class="cover-img" width="260" height="380" loading="eager" />
     </div>
     <div class="cover-rating">
       <app-rating [rating]="book.rate || 0"></app-rating>

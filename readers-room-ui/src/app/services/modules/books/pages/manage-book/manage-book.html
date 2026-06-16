@@ -19,7 +19,7 @@
     <p class="panel-label">Book Cover</p>
     <div class="cover-preview">
       @if (selectedCoverPreview) {
-        <img [src]="selectedCoverPreview" alt="Cover preview" />
+        <img [src]="selectedCoverPreview" alt="Cover preview" width="200" height="280" loading="lazy" />
       } @else {
         <div class="cover-placeholder">
           <i class="ti ti-photo" aria-hidden="true"></i>

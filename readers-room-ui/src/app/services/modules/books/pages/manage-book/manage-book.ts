@@ -55,6 +55,10 @@ export class ManageBook implements OnInit {
           synopsis: book.synopsis ?? '',
           shareable: book.shareable ?? true,
         };
+        // Show existing cover in the preview if the book already has one
+        if (book.cover) {
+          this.selectedCoverPreview = 'data:image/jpg;base64,' + book.cover;
+        }
       },
     });
   }
