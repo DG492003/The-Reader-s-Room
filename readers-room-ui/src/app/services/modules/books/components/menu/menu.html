@@ -15,7 +15,7 @@
       <span class="nav-brand-name">The Reader Room</span>
     </a>
 
-    <!-- Nav links -->
+    <!-- Desktop nav links -->
     <nav class="nav-links" aria-label="Main navigation">
       <a routerLink="/books" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{ exact: true }"
         class="nav-link">
@@ -35,7 +35,7 @@
       </a>
     </nav>
 
-    <!-- User area -->
+    <!-- Desktop user area -->
     <div class="nav-user">
       <div class="user-chip">
         <span class="user-chip__avatar">{{ connectedUsername.charAt(0).toUpperCase() }}</span>
@@ -47,5 +47,65 @@
       </button>
     </div>
 
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen"
+      aria-label="Toggle navigation"
+      aria-controls="mobile-drawer">
+      <span class="hamburger__bar"></span>
+      <span class="hamburger__bar"></span>
+      <span class="hamburger__bar"></span>
+    </button>
+
   </div>
 </header>
+
+<!-- Mobile drawer -->
+<div class="mobile-drawer" id="mobile-drawer"
+  [class.mobile-drawer--open]="menuOpen"
+  role="dialog"
+  aria-label="Navigation menu">
+
+  <!-- Drawer header -->
+  <div class="drawer-header">
+    <div class="user-chip">
+      <span class="user-chip__avatar">{{ connectedUsername.charAt(0).toUpperCase() }}</span>
+      <span class="user-chip__name">{{ connectedUsername }}</span>
+    </div>
+    <button class="drawer-close" (click)="closeMenu()" aria-label="Close menu">
+      <i class="ti ti-x"></i>
+    </button>
+  </div>
+
+  <!-- Drawer links -->
+  <nav class="drawer-links" aria-label="Mobile navigation">
+    <a routerLink="/books" routerLinkActive="drawer-link--active" [routerLinkActiveOptions]="{ exact: true }"
+      class="drawer-link" (click)="closeMenu()">
+      <i class="ti ti-compass" aria-hidden="true"></i> Discover
+    </a>
+    <a routerLink="my-books" routerLinkActive="drawer-link--active" class="drawer-link" (click)="closeMenu()">
+      <i class="ti ti-book" aria-hidden="true"></i> My Books
+    </a>
+    <a routerLink="my-waiting-list" routerLinkActive="drawer-link--active" class="drawer-link" (click)="closeMenu()">
+      <i class="ti ti-heart" aria-hidden="true"></i> Waiting List
+    </a>
+    <a routerLink="my-borrowed-books" routerLinkActive="drawer-link--active" class="drawer-link" (click)="closeMenu()">
+      <i class="ti ti-list-check" aria-hidden="true"></i> Borrowed
+    </a>
+    <a routerLink="my-returned-books" routerLinkActive="drawer-link--active" class="drawer-link" (click)="closeMenu()">
+      <i class="ti ti-rotate-left" aria-hidden="true"></i> Returned
+    </a>
+  </nav>
+
+  <!-- Drawer footer -->
+  <div class="drawer-footer">
+    <button class="drawer-logout" (click)="logout()">
+      <i class="ti ti-logout" aria-hidden="true"></i> Sign out
+    </button>
+  </div>
+</div>
+
+<!-- Overlay backdrop -->
+@if (menuOpen) {
+  <div class="drawer-backdrop" (click)="closeMenu()" aria-hidden="true"></div>
+}

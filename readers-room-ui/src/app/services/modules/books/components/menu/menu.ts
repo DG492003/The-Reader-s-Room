@@ -1,15 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Token } from '../../../../services/token/token';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
 export class Menu implements OnInit, OnDestroy {
   connectedUsername = '';
+  menuOpen = false;
   private expiryTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
@@ -27,10 +29,23 @@ export class Menu implements OnInit, OnDestroy {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
   }
 
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu() {
+    this.menuOpen = false;
+  }
+
+  // Close drawer on outside click or Escape
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.menuOpen = false;
+  }
+
   private scheduleExpiryLogout() {
     const ms = this.token.msUntilExpiry();
     if (ms <= 0) {
-      // Already expired
       this.sessionExpiredLogout();
       return;
     }
@@ -44,6 +59,7 @@ export class Menu implements OnInit, OnDestroy {
 
   logout() {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
+    this.menuOpen = false;
     this.token.clear();
     this.router.navigate(['/login']);
   }
